@@ -70,53 +70,6 @@ namespace TBA_SMS.Server.Controllers
         }
 
         [HttpPost("[action]")]
-        //        public async Task<ActionResult<AddStudentDto>> CreateStudent([FromBody] AddStudentDto studentDto)
-        //        {
-        //            // Validate the input DTO
-        //            if (studentDto == null)
-        //            {
-        //                return BadRequest("Invalid student data.");
-        //            }
-
-        //            try
-        //            {
-        //                var parameters = new[]
-        //                {
-        //    new SqlParameter("@GR_No", studentDto.GR_No),
-        //    new SqlParameter("@FirstName", studentDto.FirstName),
-        //    new SqlParameter("@LastName", studentDto.LastName),
-        //    new SqlParameter("@FatherName", studentDto.FatherName),
-        //    new SqlParameter("@Gender", studentDto.Gender),
-        //    new SqlParameter("@ContactNo", studentDto.ContactNo),
-        //    new SqlParameter("@Address", studentDto.Address),
-        //    new SqlParameter("@LastClassAttended", studentDto.LastClassAttended),
-        //    new SqlParameter("@DateOfSchoolLeaving", studentDto.DateOfSchoolLeaving),
-        //    new SqlParameter("@MedicalNeeds", studentDto.MedicalNeeds),
-        //    new SqlParameter("@FatherOccupation", studentDto.FatherOccupation),
-        //    new SqlParameter("@FatherIncome", studentDto.FatherIncome),
-        //    new SqlParameter("@NameOfDependent", studentDto.NameOfDependent),
-        //    new SqlParameter("@ClassId", studentDto.ClassId),
-        //    new SqlParameter("@UserId", studentDto.UserId),
-        //    new SqlParameter("@CreatedBy", studentDto.CreatedBy),
-        //    new SqlParameter("@UpdatedBy", studentDto.UpdatedBy),
-        //    new SqlParameter("@IsActive", studentDto.IsActive),
-        //    new SqlParameter("@InsertedStudentId", SqlDbType.Int) { Direction = ParameterDirection.Output }
-        //};
-
-        //                // Execute the stored procedure with the parameters
-        //                await _context.Database.ExecuteSqlRawAsync(
-        //                    "EXEC InsertStudent @GR_No, @FirstName, @LastName, @FatherName, @Gender, @ContactNo, @Address, @LastClassAttended, @DateOfSchoolLeaving, @MedicalNeeds, @FatherOccupation, @FatherIncome, @NameOfDependent, @ClassId, @UserId, @CreatedBy, @UpdatedBy, @IsActive, @InsertedStudentId OUT",
-        //                    parameters
-        //                );
-        //                return CreatedAtAction(nameof(GetStudent), new { message = "success fully" });
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                _logger.LogError(ex, "An error occurred while creating the student.");
-        //                return StatusCode(500, "An error occurred while processing your request.");
-        //            }
-        //        }
-
 
         public async Task<ActionResult<AddStudentDto>> CreateStudent([FromBody] AddStudentDto studentDto)
         {

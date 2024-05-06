@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TBA_SMS.core;
 using TBA_SMS.core.Interface;
 using TBA_SMS.core.Services;
+using TBA_SMS.Core.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,7 @@ builder.Services.AddDbContext<TbaDbContext>(item => item.UseSqlServer(config.Get
 
 builder.Services.AddTransient<TbaDbContext>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IClassService, ClassService>();
 
 var app = builder.Build();
 
