@@ -1,0 +1,7 @@
+const MainDash = () => {
+    return(
+        <>
+            <Dashboard />
+        </>
+    )
+}
