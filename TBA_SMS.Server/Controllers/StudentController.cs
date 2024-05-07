@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TBA_SMS.core;
+using TBA_SMS.core.DTO;
 using TBA_SMS.core.Interface;
 using TBA_SMS.core.Models;
 using TBA_SMS.Server.DTO;
@@ -69,8 +70,10 @@ namespace TBA_SMS.Server.Controllers
         }
 
         [HttpPost("[action]")]
+
         public async Task<ActionResult<AddStudentDto>> CreateStudent([FromBody] AddStudentDto studentDto)
         {
+            // Validate the input DTO
             if (studentDto == null)
             {
                 return BadRequest("Invalid student data.");
@@ -78,137 +81,138 @@ namespace TBA_SMS.Server.Controllers
 
             try
             {
-
-                // Define parameters for the stored procedure
+                // Define the parameters
                 var parameters = new[]
-                {
-            new SqlParameter("@GR_No", studentDto.GR_No),
-            new SqlParameter("@FirstName", studentDto.FirstName),
-            new SqlParameter("@LastName", studentDto.LastName),
-            new SqlParameter("@FatherName", studentDto.FatherName),
-            new SqlParameter("@Gender", studentDto.Gender),
-            new SqlParameter("@ContactNo", studentDto.ContactNo),
-            new SqlParameter("@Address", studentDto.Address),
-            new SqlParameter("@lastClassAttendent", studentDto.LastClassAttended),
-            new SqlParameter("@DateOfSchoolLeaving", studentDto.DateOfSchoolLeaving),
-            new SqlParameter("@MedicalNeeds", studentDto.MedicalNeeds),
-            new SqlParameter("@FatherOccupation", studentDto.FatherOccupation),
-            new SqlParameter("@FatherIncome", studentDto.FatherIncome),
-            new SqlParameter("@NameOfDependent", studentDto.NameOfDependent),
-            new SqlParameter("@CreatedBy", studentDto.CreatedBy),
-            new SqlParameter("@UpdatedBy", studentDto.UpdatedBy),
-            new SqlParameter("@IsActive", studentDto.IsActive),
-            new SqlParameter("@ClassId", studentDto.ClassId),
-            new SqlParameter("@UserId", studentDto.UserId)
-        };
+{
+    new SqlParameter("@GR_No", studentDto.GR_No),
+    new SqlParameter("@FirstName", studentDto.FirstName),
+    new SqlParameter("@LastName", studentDto.LastName),
+    new SqlParameter("@FatherName", studentDto.FatherName),
+    new SqlParameter("@Gender", studentDto.Gender),
+    new SqlParameter("@ContactNo", studentDto.ContactNo),
+    new SqlParameter("@Address", studentDto.Address),
+    new SqlParameter("@lastClassAttendent", studentDto.LastClassAttended),
+    new SqlParameter("@DateOfSchoolLeaving", studentDto.DateOfSchoolLeaving),
+    new SqlParameter("@MedicalNeeds", studentDto.MedicalNeeds),
+    new SqlParameter("@FatherOccupation", studentDto.FatherOccupation),
+    new SqlParameter("@FatherIncome", studentDto.FatherIncome),
+    new SqlParameter("@NameOfDependent", studentDto.NameOfDependent),
+    new SqlParameter("@CreatedBy", studentDto.CreatedBy),
+    new SqlParameter("@UpdatedBy", studentDto.UpdatedBy),
+    new SqlParameter("@IsActive", studentDto.IsActive),
+    new SqlParameter("@ClassId", studentDto.ClassId),
+    new SqlParameter("@UserId", studentDto.UserId),
+    //new SqlParameter("@InsertedStudentId", SqlDbType.Int) { Direction = ParameterDirection.Output }
+};
 
                 // Execute the stored procedure
-                var studentIdParameter = new SqlParameter
-                {
-                    ParameterName = "@InsertedStudentId",
-                    SqlDbType = System.Data.SqlDbType.Int,
-                    Direction = System.Data.ParameterDirection.Output
-                };
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC InsertStudent @GR_No, @FirstName, @LastName, @FatherName, @Gender, @ContactNo, @Address, @lastClassAttendent, @DateOfSchoolLeaving, @MedicalNeeds, @FatherOccupation, @FatherIncome, @NameOfDependent, @CreatedBy, @UpdatedBy, @IsActive, @ClassId, @UserId",
+                    parameters
+                );
 
-                _context.Database.ExecuteSqlRaw("[dbo].[InsertStudent] @GR_No, @FirstName, @LastName, @FatherName, @Gender, @ContactNo, @Address, @lastClassAttendent, @DateOfSchoolLeaving, @MedicalNeeds,@FatherOccupation, @FatherIncome, @NameOfDependent, @CreatedBy, @UpdatedBy, @IsActive, @ClassId, @UserId, @InsertedStudentId OUT",
-                    parameters.Concat(new[] { studentIdParameter }).ToArray());
-
-                var newStudentId = (int)studentIdParameter.Value;
-
-                // Retrieve the newly created student from the database
-                var newStudent = await _context.Students.FindAsync(newStudentId);
-
-                // Map the new student to a DTO
-                var newStudentDto = new AddStudentDto
-                {
-
-                    GR_No = newStudent.GR_No,
-                    FirstName = newStudent.FirstName,
-                    LastName = newStudent.LastName,
-                    FatherName = newStudent.FatherName,
-                    Gender = newStudent.Gender,
-                    ContactNo = newStudent.ContactNo,
-                    Address = newStudent.Address,
-                    LastClassAttended = newStudent.LastClassAttendent,
-                    DateOfSchoolLeaving = newStudent.DateOfSchoolLeaving,
-                    MedicalNeeds = newStudent.MedicalNeeds,
-                    FatherOccupation = newStudent.FatherOccupation,
-                    FatherIncome = newStudent.FatherIncome,
-                    NameOfDependent = newStudent.NameOfDependent,
-                    ClassId = newStudent.ClassId,
-                    UserId = newStudent.UserId
-                };
-
-                // Return the created student DTO
-                return CreatedAtAction(nameof(GetStudent), new { id = newStudent.StudentId }, newStudentDto);
+                // Return a successful response
+                return Ok(new { message = "Student successfully created" });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while creating the student.");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+
+        [HttpPut("{GR_No}")]
+        public async Task<IActionResult> UpdateStudent(int GR_No, [FromBody] UpdateStudentDto studentDto)
+        {
+            // Validate the input DTO
+            if (studentDto == null)
+            {
+                return BadRequest("Invalid student data.");
+            }
+
+            try
+            {
+                // Find the student by GR_No using a LINQ query
+                var student = await _context.Students.FirstOrDefaultAsync(s => s.GR_No == GR_No);
+                if (student == null)
+                {
+                    return NotFound($"No student found with GR_No: {GR_No}");
+                }
+
+                // Check if the provided ClassId exists in the Class table
+                var classExists = await _context.Class.AnyAsync(c => c.ClassId == studentDto.ClassId);
+                if (!classExists)
+                {
+                    return BadRequest($"Invalid ClassId: {studentDto.ClassId}");
+                }
+
+                // Update the student record with new information from the input DTO
+                student.FirstName = studentDto.FirstName;
+                student.LastName = studentDto.LastName;
+                student.FatherName = studentDto.FatherName;
+                student.Gender = studentDto.Gender;
+                student.ContactNo = studentDto.ContactNo;
+                student.Address = studentDto.Address;
+                student.LastClassAttendent = studentDto.LastClassAttended;
+                student.DateOfSchoolLeaving = studentDto.DateOfSchoolLeaving;
+                student.MedicalNeeds = studentDto.MedicalNeeds;
+                student.FatherOccupation = studentDto.FatherOccupation;
+                student.FatherIncome = studentDto.FatherIncome;
+                student.NameOfDependent = studentDto.NameOfDependent;
+                student.ClassId = studentDto.ClassId;
+                student.UserId = studentDto.UserId;
+                student.UpdatedBy = studentDto.UpdatedBy;
+                student.UpdatedDate = DateTime.UtcNow; // Update the date
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                // Return NoContent (204) to indicate successful update
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the error and return an internal server error
+                _logger.LogError(ex, $"Error occurred while updating student with GR_No: {GR_No}");
                 return StatusCode(500, "Internal server error.");
             }
         }
 
-        // PUT: api/Student/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, Student student)
+
+
+        // delete: api/student/5
+        [HttpDelete("{GR_No}")]
+        public async Task<IActionResult> DeleteStudent(int GR_No)
         {
             try
             {
-                if (id != student.StudentId)
-                {
-                    return BadRequest("ID mismatch");
-                }
-
-                _context.Entry(student).State = EntityState.Modified;
-
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return StatusCode(500, "Internal server error due to concurrency issue");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred while updating student with ID {id}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        // DELETE: api/Student/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStudent(int id)
-        {
-            try
-            {
-                var student = await _context.Students.FindAsync(id);
+                // Find the student by GR_No using a LINQ query
+                var student = await _context.Students.FirstOrDefaultAsync(s => s.GR_No == GR_No);
                 if (student == null)
                 {
-                    return NotFound();
+                    return NotFound($"No student found with GR_No: {GR_No}");
                 }
 
+                // Remove the student from the context and save changes
                 _context.Students.Remove(student);
                 await _context.SaveChangesAsync();
+
+                // Return NoContent (204) to indicate successful deletion
                 return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error occurred while deleting student with ID {id}");
-                return StatusCode(500, "Internal server error");
+                // Log the error and return an internal server error
+                _logger.LogError(ex, $"Error occurred while deleting student with GR_No: {GR_No}");
+                return StatusCode(500, "Internal server error.");
             }
         }
 
-        private bool StudentExists(int id)
+        private bool StudentExists(int GR_No)
         {
-            return _context.Students.Any(s => s.StudentId == id);
+            // Check if a student exists with the given GR_No
+            return _context.Students.Any(s => s.GR_No == GR_No);
         }
     }
 }
