@@ -52,7 +52,7 @@ const Sidebar = () => {
                 My Dashboard
               </MDBListGroupItem></Link>
 
-            <Link to="/profile" className='sidebarlink'><MDBListGroupItem tag='a' className='sidebarbtn rounded mb-4'>
+            <Link to="/profile/5" className='sidebarlink'><MDBListGroupItem tag='a' className='sidebarbtn rounded mb-4'>
                 <MDBIcon fas icon="lock me-3" />
                 My Profile
               </MDBListGroupItem></Link>
