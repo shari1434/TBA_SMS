@@ -11,19 +11,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Enable CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins")
+            .Get<string[]>() ?? [""]).AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetRequiredService<IConfiguration>();
@@ -32,6 +33,7 @@ builder.Services.AddDbContext<TbaDbContext>(item => item.UseSqlServer(config.Get
 builder.Services.AddTransient<TbaDbContext>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<ISponsorService, SponsorService>();
 
 var app = builder.Build();
 
@@ -51,7 +53,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 // Enable CORS
-app.UseCors("AllowAll");
+app.UseCors();
 
 app.MapControllers();
 
