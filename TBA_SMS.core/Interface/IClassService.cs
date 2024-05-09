@@ -4,6 +4,8 @@ namespace TBA_SMS.core.Interface
 {
     public interface IClassService
     {
-        GetClass GetNoOfStudentsInClass(string className);
+        public GetClass GetNoOfStudentsInClass(string className);
+        IEnumerable<GetClass> GetNoOfStudents();
+
     }
 }

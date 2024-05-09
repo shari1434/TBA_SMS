@@ -33,6 +33,7 @@ builder.Services.AddDbContext<TbaDbContext>(item => item.UseSqlServer(config.Get
 builder.Services.AddTransient<TbaDbContext>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<IActivityCalendarService, ActivityCalendarService>();
 
 var app = builder.Build();
 

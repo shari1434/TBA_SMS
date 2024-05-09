@@ -21,6 +21,12 @@ namespace TBA_SMS.Server.Controllers
             var result = _classService.GetNoOfStudentsInClass(classname);
             return Ok(result);
         }
+        [HttpGet("[action]")]
+        public IActionResult GetNoOfStudents()
+        {
+            var result = _classService.GetNoOfStudents();
+            return Ok(result);
+        }
     }
 }
 

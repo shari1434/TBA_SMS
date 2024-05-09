@@ -5,7 +5,7 @@
 
         public int ClassId { get; set; }
         public string ClassName { get; set; }
-        public int SectionId { get; set; }
+
         public int CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public int UpdatedBy { get; set; }
