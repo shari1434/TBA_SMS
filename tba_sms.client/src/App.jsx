@@ -1,7 +1,6 @@
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Wrapper from "./components/Wrapper";
-import Home from "./pages/Home";
 import About from "./pages/about";
 import Program from "./pages/program";
 import GetInvolved from "./pages/getInvolved";
@@ -22,7 +21,8 @@ import Studentprofile from "./pages/Studentprofile";
 import Monthwisecalendar from "./components/Monthwisecalendar";
 import Datewisecalendar from "./components/Datewisecalendar";
 import Events from "./pages/Events";
-import Gallery from "./pages/gallery";
+import Home from "./pages/Home";
+import Gallery from "./pages/Gallery";
 
 const router = createBrowserRouter([
   {
@@ -100,11 +100,11 @@ const router = createBrowserRouter([
     element: <Dashboard />,
   },
   {
-    path: "/profile",
+    path: "/profile/:id",
     element: <Profile />,
   },
   {
-    path: "/editprofile",
+    path: "/editprofile/:id",
     element: <EditProfile />,
   },
   {
@@ -141,7 +141,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/gallery",
-    element: <Gallery/>
+    element: <Gallery />
   },
   {
     path: "/signup",
