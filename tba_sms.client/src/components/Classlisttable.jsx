@@ -39,7 +39,7 @@ const Classlisttable = () => {
                   <td>{classItem.noOfStudents}</td>
                   <td>
                   
-                    <Link to='/studentlist'>
+                    <Link to={`/studentlist/${classItem.classId}`}>
                       <button className='btn btnclasslist lh-sm'>View Details</button>
                     </Link>
                   </td>

@@ -23,6 +23,7 @@ import Datewisecalendar from "./components/Datewisecalendar";
 import Events from "./pages/Events";
 import Home from "./pages/Home";
 import Gallery from "./pages/Gallery";
+import Calendar from "./components/Calendar";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />, 
+        element: <Home />,
       },
     ],
   },
@@ -112,7 +113,7 @@ const router = createBrowserRouter([
     element: <Classlist />,
   },
   {
-    path: "/studentlist",
+    path: "/studentlist/:id",
     element: <Studentlist />,
   },
   {
@@ -143,6 +144,12 @@ const router = createBrowserRouter([
     path: "/gallery",
     element: <Gallery />
   },
+  
+  {
+    path: "/calendar",
+    element: <Calendar />
+  },
+
   {
     path: "/signup",
     element: <Wrapper />,
