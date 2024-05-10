@@ -18,10 +18,12 @@ export const sponsorApi = createApi({
                 method: 'PUT',
                 body: data
             })
-        })
+        }),
+
 
     }),
 })
+
 
 export const { useGetAllSponsorsQuery, useGetSponsorByIdQuery, useUpdateSponsorMutation } = sponsorApi;
 

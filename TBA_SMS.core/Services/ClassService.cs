@@ -1,4 +1,5 @@
-﻿using TBA_SMS.core;
+﻿using Microsoft.EntityFrameworkCore;
+using TBA_SMS.core;
 using TBA_SMS.core.DTO;
 using TBA_SMS.core.Interface;
 
@@ -12,6 +13,36 @@ namespace TBA_SMS.Core.Service
         {
             _context = context;
         }
+
+        public IEnumerable<GetClass> GetNoOfStudents()
+        {
+            var result = _context.Students
+                .Include(x => x.Classes)
+                .GroupBy(s => s.Classes)
+                .Select(g => new GetClass
+                {
+                    ClassId = g.Key.ClassId,
+                    ClassName = g.Key.ClassName,
+                    NoOfStudents = g.Count(),
+                    IsActive = g.Key.IsActive,
+                    CreatedBy = g.Key.CreatedBy,
+                    CreatedDate = g.Key.CreatedDate,
+                    UpdatedBy = g.Key.UpdatedBy,
+                    UpdatedDate = g.Key.UpdatedDate,
+
+                })
+                .ToList();
+
+            // Demonstrate using a foreach loop to iterate over the results
+            foreach (var item in result)
+            {
+                Console.WriteLine($"Class ID: {item.ClassId}, Class Name: {item.ClassName}, Number of Students: {item.NoOfStudents}");
+            }
+
+            // Return the list of results
+            return result;
+        }
+
 
         public GetClass GetNoOfStudentsInClass(string className)
         {
@@ -29,6 +60,8 @@ namespace TBA_SMS.Core.Service
             // Return the result as a tuple
             if (result != null)
             {
+
+
                 return new GetClass()
                 {
                     ClassId = result.ClassId,
@@ -39,9 +72,8 @@ namespace TBA_SMS.Core.Service
             else
             {
                 // Return a default value if no matching class is found
-                return (GetNoOfStudentsInClass(className));
+                return new GetClass();
             }
         }
-
     }
 }

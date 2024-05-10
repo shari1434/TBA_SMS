@@ -1,8 +1,16 @@
+import {useEffect} from "react"
 import { BarChartLine } from 'react-bootstrap-icons';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
+import { useGetClassListQuery } from '../Services/ClassList';
 
 const Classlisttable = () => {
+  const { data:classList } = useGetClassListQuery()
+
+  useEffect(() => {
+    console.log(classList)
+  }, [classList])
+
   return (
     <>
     <div className="mb-3 mt-3">
@@ -22,12 +30,22 @@ const Classlisttable = () => {
             </tr>
           </thead>
           <tbody>
-            <tr style={{height: '40px'}}>
-              <td>1</td>
-              <td>PG</td>
-              <td>20</td>
-              <td><Link to='/studentlist'><button className='btn btnclasslist lh-sm'>View Details</button></Link></td>
-            </tr>
+            {
+           
+              classList?.map((classItem, index) => (
+                <tr key={classItem.id} style={{ height: '40px' }}>
+                  <td>{index + 1}</td>
+                  <td>{classItem.className}</td> 
+                  <td>{classItem.noOfStudents}</td>
+                  <td>
+                  
+                    <Link to={`/studentlist/${classItem.classId}`}>
+                      <button className='btn btnclasslist lh-sm'>View Details</button>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            }
           </tbody>
         </Table>
     </div>

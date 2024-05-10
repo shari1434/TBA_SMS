@@ -6,6 +6,7 @@ namespace TBA_SMS.core.Interface
     {
         IEnumerable<GetStudent> GetAllStudents();
         GetStudent GetStudentById(int studentId);
+        IEnumerable<GetStudentByClassDto> GetStudentByClassId(int classId);
         void AddStudent(GetStudent student);
         void UpdateStudent(GetStudent student);
         void DeleteStudent(int studentId);

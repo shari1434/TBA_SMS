@@ -79,6 +79,23 @@ namespace TBA_SMS.core.Services
             };
         }
 
+        public IEnumerable<GetStudentByClassDto> GetStudentByClassId(int classId)
+        {
+            var students = _context.Students
+                .Where(x => x.ClassId == classId);
+
+            return students.Select(student => new GetStudentByClassDto
+            {
+
+                GR_No = student.GR_No,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                FatherName = student.FatherName,
+
+
+            });
+        }
+
         public void AddStudent(GetStudent student)
         {
             // Convert the DTO to entity
@@ -157,5 +174,6 @@ namespace TBA_SMS.core.Services
             _context.Students.Remove(student);
             _context.SaveChanges();
         }
+
     }
 }

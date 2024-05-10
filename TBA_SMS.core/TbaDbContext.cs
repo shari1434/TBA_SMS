@@ -32,7 +32,7 @@ namespace TBA_SMS.core
         public DbSet<Role> Role { get; set; }
 
         public DbSet<UserRegs> UserRegs { get; set; }
-
+        public DbSet<ActivityCalendar> ActivityCalendar { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
