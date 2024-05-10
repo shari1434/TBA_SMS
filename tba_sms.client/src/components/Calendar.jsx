@@ -57,7 +57,7 @@ const Calendar = () => {
             {/* Displaying the calendar days */}
             <div className="calendar-grid">
                 {monthDays.map((day, index) => (
-                    <div key={index} className=" bg-success card w-25 m-2" >
+                    <div key={index} className="  card w-25 m-2" >
                         {/* Display the day of the month */}
                         <div className="row calendarbox">
                             <p className="col fw-bold text-secondary">{format(day, 'd')}</p>

@@ -1,10 +1,11 @@
 ﻿using TBA_SMS.core.DTO;
+using TBA_SMS.core.Models;
 
 namespace TBA_SMS.core.Interface
 {
     public interface IActivityCalendarService
     {
-        IEnumerable<ActivityCalendarDto> GetActivityCalendar();
+        IEnumerable<ActivityCalendar> GetActivityCalendar();
 
 
         Task AddActivityCalendar(ActivityCalendarDto activityCalendar);

@@ -40,8 +40,32 @@ namespace TBA_SMS.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ActivityCalendarDto>> GetActivityCalendars()
         {
-            var activityCalendars = _activityCalendarService.GetActivityCalendar();
-            return Ok(activityCalendars);
+            var activities = _activityCalendarService.GetActivityCalendar();
+
+            if (activities == null)
+            {
+                return NotFound();
+            }
+
+            var result = new List<ActivityCalendarDto>();
+
+            foreach (var activitiy in activities)
+            {
+                result.Add(new ActivityCalendarDto
+                {
+                    ActivityCalendarId = activitiy.ActivityCalendarId,
+                    Title = activitiy.Title,
+                    Description = activitiy.Description,
+                    Date = activitiy.Date,
+                    CreatedDate = activitiy.CreatedDate,
+                    CreatedBy = activitiy.CreatedBy,
+                    UpdatedDate = activitiy.UpdatedDate,
+                    UpdatedBy = activitiy.UpdatedBy,
+                    IsActive = activitiy.IsActive
+                });
+            }
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

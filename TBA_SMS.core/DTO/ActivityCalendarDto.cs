@@ -9,8 +9,6 @@
 
         public DateTime Date { get; set; }
 
-        public int ClassId { get; set; }
-
         public int CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }

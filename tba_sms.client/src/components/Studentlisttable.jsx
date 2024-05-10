@@ -1,8 +1,22 @@
 import { BarChartLine } from 'react-bootstrap-icons';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
+import { useGetStudentByClassIdQuery } from '../Services/Student';
 
-const Studentlisttable = () => {
+
+const Studentlisttable = ({classId}) => {
+   // Use the hook to fetch the class list
+   const { data: classList, error, isLoading } = useGetStudentByClassIdQuery(classId);
+
+   if (isLoading) {
+       // Show loading message
+       return <div>Loading...</div>;
+   }
+
+   if (error) {
+       // Show error message
+       return <div>Error loading data.</div>;
+   }
   return (
     <>
     <div className="mb-3 mt-3">
@@ -24,15 +38,23 @@ const Studentlisttable = () => {
             </tr>
           </thead>
           <tbody>
-            <tr style={{height: '40px'}}>
-              <td>1</td>
-              <td>0001</td>
-              <td>Syed Ehtisham Khan</td>
-              <td>Syed Faheem Khan</td>
-              <td><Link to='/studentprofile' ><button className='btn btnclasslist lh-sm me-2 '>View Profile</button></Link>
-              <Link to='/sponsorcart'><button className='btn btnclasslist lh-sm '>Add to Sponsor</button></Link></td>
-            </tr>
-          </tbody>  
+                {classList && classList.map((student, index) => (
+                    <tr key={student.id} style={{ height: '40px' }}>
+                        <td>{index + 1}</td>
+                        <td>{student.grNo}</td>
+                        <td>{student.firstName} {student.lastName}</td>
+                        <td>{student.fatherName}</td>
+                        <td>
+                            <Link to={`/studentprofile/${student.studentId}`}>
+                                <button className='btn btnclasslist lh-sm me-2'>View Profile</button>
+                            </Link>
+                            <Link to={`/sponsorcart/${student.studentId}`}>
+                                <button className='btn btnclasslist lh-sm'>Add to Sponsor</button>
+                            </Link>
+                        </td>
+                    </tr>
+                ))}
+            </tbody> 
         </Table>
         <Link to='/classlist'><button className='btn btn-primary btnstudent btn-color'>Go to Class Lists</button></Link>
     </div>

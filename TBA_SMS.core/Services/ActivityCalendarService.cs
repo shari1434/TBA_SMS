@@ -21,7 +21,7 @@ namespace TBA_SMS.core.Services
                 Description = activityCalendar.Description,
                 Date = activityCalendar.Date,
                 CreatedDate = DateTime.Now,
-                ClassId = activityCalendar.ClassId
+                //ClassId = activityCalendar.ClassId
             };
 
             await _context.ActivityCalendar.AddAsync(request);
@@ -34,9 +34,9 @@ namespace TBA_SMS.core.Services
 
         //}
 
-        public IEnumerable<ActivityCalendarDto> GetActivityCalendar()
+        public IEnumerable<ActivityCalendar> GetActivityCalendar()
         {
-            var result = _context.Set<ActivityCalendarDto>();
+            var result = _context.ActivityCalendar.ToList();
 
             return result;
         }

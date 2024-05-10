@@ -69,6 +69,16 @@ namespace TBA_SMS.Server.Controllers
             }
         }
 
+        [HttpGet("[action]")]
+        public ActionResult<IEnumerable<GetStudentByClassDto>> GetStudentByClassId(int classId)
+        {
+            // Call the service to get all students by class
+            var students = _studentService.GetStudentByClassId(classId);
+
+            // Return the students as a JSON response
+            return Ok(students);
+        }
+
         [HttpPost("[action]")]
 
         public async Task<ActionResult<AddStudentDto>> CreateStudent([FromBody] AddStudentDto studentDto)
